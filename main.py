@@ -90,8 +90,7 @@ if __name__ == "__main__":
 	EnvList = ["HalfCheetah-v4", "Ant-v4", "Humanoid-v4", "Walker2d-v4", "Hopper-v4"]  # "HalfCheetah", "Ant-v4",
 	SeedList = np.array([10,11,12]) #
 
-    j = int(0)
-
+	j = int(0)
 	for seq in range(SeedList.shape[0]):
 		for enq in range(len(EnvList)):
 			Env = EnvList[enq]
