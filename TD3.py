@@ -66,9 +66,6 @@ class policy(object):
 		self.actor_target = copy.deepcopy(self.actor)
 		self.critic_target = copy.deepcopy(self.critic)
 
-		self.actor_old = copy.deepcopy(self.actor)
-		self.actor_temp = copy.deepcopy(self.actor)
-
 		self.max_action = max_action
 		self.total_it = 0
 
@@ -76,13 +73,9 @@ class policy(object):
 		state = torch.FloatTensor(state.reshape(1, -1)).to(device)
 		return self.actor(state).cpu().data.numpy().flatten()
 
-	def select_action_old(self, state):
-		state = torch.FloatTensor(state.reshape(1, -1)).to(device)
-		return self.actor_old(state).cpu().data.numpy().flatten()
 
 	def train(self, replay_buffer, batch_size=256):
 		self.total_it += 1
-
 		state, action, next_state, reward, not_done = replay_buffer.sample(batch_size)
 
 		with torch.no_grad():
