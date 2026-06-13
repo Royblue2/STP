@@ -1,42 +1,42 @@
-# STP: Spatiotemporally Prioritized Experience Replay
+# Spatiotemporally Prioritized Experience Replay for Off-Policy Reinforcement Learning
 
-本仓库实现了论文 **Spatiotemporally prioritized experience replay for off-policy reinforcement learning** 中提出的 **STP**（Spatiotemporally Prioritized Experience Replay），并将其接入 **TD3**，用于连续动作空间的离策略强化学习任务。
+This repository implements **STP** (Spatiotemporally Prioritized Experience Replay), the replay method proposed in the paper **Spatiotemporally prioritized experience replay for off-policy reinforcement learning**, and integrates it with **TD3** for continuous-control off-policy reinforcement learning tasks.
 
-## 论文要点
+## Paper summary
 
-STP 的核心是为每条经验同时分配两类优先级：
+STP assigns two kinds of priority to each experience:
 
-- **时间优先级**：越新的经验优先级越高，用于减少早期经验被过度采样。
-- **空间优先级**：位于稀疏状态-动作区域的经验优先级更高，用于提升样本多样性。
+- **Temporal priority**: newer experiences receive higher priority, reducing over-sampling of early transitions.
+- **Spatial priority**: experiences in sparse state-action regions receive higher priority, improving sample diversity.
 
-通过融合这两种优先级，STP 让回放池更倾向于采样“新颖且不冗余”的经验，从而提升离策略算法的样本利用效率。
+By combining temporal and spatial priorities, STP encourages sampling experiences that are both recent and non-redundant, improving sample efficiency in off-policy learning.
 
-## 代码结构
+## Repository structure
 
-- `main.py`：训练入口，默认在 `HalfCheetah-v4` 上运行 TD3 + STP。
-- `STP.py`：STP 回放池、SumTree，以及基于 KMeans 的空间密度估计。
-- `TD3.py`：TD3 的 Actor / Critic 网络与训练逻辑。
+- `main.py`: training entry point, which runs TD3 + STP on `HalfCheetah-v4` by default.
+- `STP.py`: STP replay buffer, SumTree, and KMeans-based spatial density estimation.
+- `TD3.py`: TD3 actor-critic networks and training logic.
 
-## 环境依赖
+## Requirements
 
 - Python 3
 - PyTorch
 - NumPy
 - Matplotlib
 - Gym
-- MuJoCo 环境
+- MuJoCo
 
-> 说明：代码使用的是旧版 Gym 接口风格，运行时需要与对应版本的 Gym / MuJoCo 配套。
+> Note: the code follows an older Gym API style, so the Gym / MuJoCo versions need to match the codebase.
 
-## 运行方式
+## Quick start
 
-安装依赖后直接运行：
+Run the default experiment:
 
 ```bash
 python main.py
 ```
 
-也可以指定环境和 STP 参数：
+You can also specify the environment and STP hyperparameters:
 
 ```bash
 python main.py \
@@ -47,25 +47,25 @@ python main.py \
   --save_plot
 ```
 
-训练过程中的评估结果会保存到 `./results/`。
+Evaluation results are saved under `./results/`.
 
-## 主要参数
+## Key arguments
 
-| 参数 | 默认值 | 说明 |
+| Argument | Default | Description |
 | --- | --- | --- |
-| `--env` | `HalfCheetah-v4` | 训练环境 |
-| `--seed` | `10` | 随机种子 |
-| `--start_timesteps` | `25000` | 随机探索阶段步数 |
-| `--eval_freq` | `5000` | 评估频率 |
-| `--max_timesteps` | `1000000` | 最大训练步数 |
-| `--batch_size` | `256` | 训练批大小 |
-| `--ip` | `0.2` | 空间优先级剪裁参数 |
-| `--k` | `10` | 初始聚类数 |
-| `--save_plot` | `False` | 是否保存曲线图 |
+| `--env` | `HalfCheetah-v4` | Training environment |
+| `--seed` | `10` | Random seed |
+| `--start_timesteps` | `25000` | Number of initial random exploration steps |
+| `--eval_freq` | `5000` | Evaluation frequency |
+| `--max_timesteps` | `1000000` | Maximum number of environment steps |
+| `--batch_size` | `256` | Training batch size |
+| `--ip` | `0.2` | Spatial-priority clipping parameter |
+| `--k` | `10` | Initial number of clusters |
+| `--save_plot` | `False` | Whether to save the reward curve |
 
-## 论文中的实验环境
+## Environments used in the paper
 
-论文主要在以下 MuJoCo 连续控制任务上验证 STP：
+The paper evaluates STP on the following MuJoCo continuous-control tasks:
 
 - Ant
 - HalfCheetah
@@ -73,10 +73,10 @@ python main.py \
 - Humanoid
 - Walker2d
 
-## 参考
+## Reference
 
-论文标题：
+Paper title:
 
 **Spatiotemporally prioritized experience replay for off-policy reinforcement learning**
 
-如需引用，请以论文正式发表版本为准。
+Please cite the published paper version if you use this work.
