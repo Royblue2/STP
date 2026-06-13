@@ -2,14 +2,14 @@
 
 This repository implements **STP** (Spatiotemporally Prioritized Experience Replay), 
 
-and integrates it with **TD3** for continuous-control off-policy reinforcement learning tasks.
+and integrates it with **TD3** for continuous action tasks.
 
 ## Summary
 
 STP assigns two kinds of priority to each experience:
 
-- **Temporal priority**: newer experiences receive higher priority, reducing over-sampling of early transitions.
-- **Spatial priority**: experiencSes in sparse state-action regions receive higher priority, improving sample diversity.
+- **Temporal priority**: newer experiences receive higher priority, reducing over-sampling of early experience.
+- **Spatial priority**: experiences in sparse regions receive higher priority, improving sample diversity.
 
 By combining temporal and spatial priorities, STP encourages sampling experiences that are both recent and non-redundant, improving sample efficiency in off-policy learning.
 
@@ -62,6 +62,4 @@ Evaluation results are saved under `./results/`.
 | `--alpha` | `0.2` | Spatial-priority clipping parameter |
 | `--k` | `10` | Initial number of clusters |
 | `--lambda_` | `0.5` | Trade-off factor λ  |
-| `--save_plot` | `False` | Whether to save the reward curve |
-
 

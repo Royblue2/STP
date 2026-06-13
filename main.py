@@ -149,20 +149,3 @@ if __name__ == "__main__":
 			)
 			evaluations.append(R)
 			np.save(f"./results/{file_name}", evaluations)
-
-			if t % int(1e4) == 0:
-				print(f"Step: {t}  Reward: {int(R)}")
-
-			if t % int(1e5) == 0:
-				print(f"--------  {round((time.time() - start_time) / 60., 1)} min  --------")
-
-			if args.save_plot:
-				plt.figure()
-				plt.plot(evaluations, "b")
-				plt.xlabel("Evaluation")
-				plt.ylabel("Average Reward")
-				plt.title(file_name)
-				plt.savefig(
-					"./results/" + file_name + "-" + str(round(np.max(evaluations))) + ".png"
-				)
-				plt.close()
