@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
 	parser.add_argument("--alpha", default=0.2, type=float)             # Spatial priority clipping α
 	parser.add_argument("--k", default=10, type=int)                    # Number of initial groups k
-	parser.add_argument("--lambda_", default=0.5, type=float)            # Trade-off factor λ 
+	parser.add_argument("--lambda_", default=0.5, type=float)           # Trade-off factor λ 
 
 	parser.add_argument("--eval_episodes", default=5, type=int)         # Evaluation episodes
 	parser.add_argument("--save_plot", action="store_true")             # Save reward curve
@@ -147,9 +147,7 @@ if __name__ == "__main__":
 				args.seed,
 				eval_episodes=args.eval_episodes
 			)
-
 			evaluations.append(R)
-
 			np.save(f"./results/{file_name}", evaluations)
 
 			if t % int(1e4) == 0:

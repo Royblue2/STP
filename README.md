@@ -28,8 +28,9 @@ You can also specify the environment and STP hyperparameters:
 python main.py \
   --env HalfCheetah-v4 \
   --seed 10 \
-  --ip 0.2 \
+  --alpha 0.2 \
   --k 10 \
+  --lambda_ 0.5
 ```
 
 Evaluation results are saved under `./results/`.
@@ -42,12 +43,9 @@ Evaluation results are saved under `./results/`.
 
 ## Requirements
 
-- Python 3
-- PyTorch
-- NumPy
-- Matplotlib
-- Gym
-- MuJoCo
+- Python >= 3.8
+- Gym <= 0.25
+- MuJoCo >= 2.0.2
 
 
 
@@ -61,8 +59,9 @@ Evaluation results are saved under `./results/`.
 | `--eval_freq` | `5000` | Evaluation frequency |
 | `--max_timesteps` | `1000000` | Maximum number of environment steps |
 | `--batch_size` | `256` | Training batch size |
-| `--ip` | `0.2` | Spatial-priority clipping parameter |
+| `--alpha` | `0.2` | Spatial-priority clipping parameter |
 | `--k` | `10` | Initial number of clusters |
+| `--lambda_` | `0.5` | Trade-off factor λ  |
 | `--save_plot` | `False` | Whether to save the reward curve |
 
 
