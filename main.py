@@ -48,18 +48,19 @@ if __name__ == "__main__":
 	parser.add_argument("--expl_noise", default=0.1, type=float)        # Std of Gaussian exploration noise
 	parser.add_argument("--batch_size", default=256, type=int)          # Batch size
 
-	parser.add_argument("--ip", default=0.2, type=float)                # STP prioritized replay parameter
-	parser.add_argument("--k", default=10, type=int)                    # STP prioritized replay parameter
+	parser.add_argument("--alpha", default=0.2, type=float)             # Spatial priority clipping α
+	parser.add_argument("--k", default=10, type=int)                    # Number of initial groups k
+	parser.add_argument("--lambda_", default=0.5, type=float)            # Trade-off factor λ 
 
 	parser.add_argument("--eval_episodes", default=5, type=int)         # Evaluation episodes
 	parser.add_argument("--save_plot", action="store_true")             # Save reward curve
 
 	args = parser.parse_args()
 
-	file_name = f"{args.env}_{args.seed}_{args.ip}_{args.k}"
+	file_name = f"{args.env}_{args.seed}_{args.alpha}_{args.k}_{args.lambda_}"
 
 	print("---------------------------------------")
-	print(f"Env: {args.env}, Seed: {args.seed}, ip: {args.ip}, k: {args.k}")
+	print(f"Env: {args.env}, Seed: {args.seed}, alpha: {args.alpha}, k: {args.k}, lambda: {args.lambda_}")
 	print("---------------------------------------")
 
 	if not os.path.exists("./results"):
@@ -86,8 +87,9 @@ if __name__ == "__main__":
 	replay_buffer = STP.PrioritizedReplayBuffer(
 		state_dim,
 		action_dim,
-		args.ip,
-		args.k
+		args.alpha,
+		args.k,
+		args.lambda_
 	)
 
 	evaluations = []

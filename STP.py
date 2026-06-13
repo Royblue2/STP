@@ -6,7 +6,7 @@ import torch
 
 
 class PrioritizedReplayBuffer():
-    def __init__(self, state_dim, action_dim, ip,k,max_size=int(1e6)):
+    def __init__(self, state_dim, action_dim, alpha, k, lambda_, max_size=int(1e6)):
         self.state = np.zeros((max_size, state_dim))
         self.action = np.zeros((max_size, action_dim))
         self.next_state = np.zeros((max_size, state_dim))
@@ -16,8 +16,9 @@ class PrioritizedReplayBuffer():
         self.ptr = 0
         self.size = 0
         self.tree = SumTree(max_size)
-        self.kmeans = KMeans(k,ip=ip) ##
-        self.ip = ip
+        self.kmeans = KMeans(k, alpha=alpha) ##
+        self.alpha = alpha
+        self.lambda_ = lambda_
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     def add(self, state, action, next_state, reward, done):
@@ -35,15 +36,15 @@ class PrioritizedReplayBuffer():
                 for i in range(self.ptr):
                     density[i] = group_counts[marked[i]-1]
                 avg_density = torch.tensor(self.ptr, dtype=torch.float, device=self.device) / self.kmeans.k
-                values = (avg_density / density).clip(1 - self.ip, 1 + self.ip)
+                values = (avg_density / density).clip(1 - self.alpha, 1 + self.alpha)
                 priorities = torch.exp(values) + torch.tensor(1, dtype=torch.float, device=self.device)
-                priorities = priorities*torch.tensor(0.5, dtype=torch.float, device=self.device)
+                priorities = priorities*torch.tensor(self.lambda_, dtype=torch.float, device=self.device)
                 self.levels = self.tree.batch_set(self.ptr, priorities)
             else:
                 value = self.kmeans.update(self.ptr, state, action)
                 priority1 = (self.levels / self.ptr)*torch.exp(value)
                 priority2 = torch.tensor(self.ptr/25e3, dtype=torch.float, device=self.device)**2
-                priority = (priority1 + priority2) * torch.tensor(0.5, dtype=torch.float, device=self.device)
+                priority = (priority1 + priority2) * torch.tensor(self.lambda_, dtype=torch.float, device=self.device)
                 self.levels = self.tree.set(self.ptr, priority)
 
     def sample(self, batch_size):
@@ -94,15 +95,15 @@ class SumTree(object):
 
 
 class KMeans:
-    def __init__(self, k,ip, max_iters=30, tol=1e-4, device=None):
+    def __init__(self, k, alpha, max_iters=30, tol=1e-4, device=None):
         self.k = k
         self.max_iters = max_iters
         self.tol = tol
         self.device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.representatives = None
         self.group_counts = None
-        self.ip = ip
-        print(ip)
+        self.alpha = alpha
+
     def fit(self, states, actions):
         states = torch.FloatTensor(states)
         actions = torch.FloatTensor(actions)
@@ -197,6 +198,6 @@ class KMeans:
             count = self.group_counts[nearest_idx]
 
         t = torch.tensor(float(total), device=self.device)
-        value = (t / (self.k * count)).clip(1-self.ip, 1+self.ip)
+        value = (t / (self.k * count)).clip(1-self.alpha, 1+self.alpha)
 
         return value
