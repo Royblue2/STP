@@ -10,14 +10,13 @@ import warnings
 import STP
 import TD3
 
-plt.switch_backend("agg")
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 # Runs policy for X episodes and returns average reward
 # A fixed seed is used for the eval environment
 
-def eval_policy(policy, env_name, seed, eval_episodes=5):
+def eval_policy(policy, env_name, seed, eval_episodes=10):
 	eval_env = gym.make(env_name)
 	eval_env.seed(seed + 100)
 
