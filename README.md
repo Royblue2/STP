@@ -1,5 +1,5 @@
 ## Paper Status
-This work is currently **Under Review** at [XX Journal/Conference].
+This work is currently **Under Review**.
 
 The code and manuscript in this repository are preliminary versions.
 Please do not distribute or quote without authorization.
